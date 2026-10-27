@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>Sahil Home</title>
+<style>html,body{margin:0;height:100%;background:#0b1230}</style>
+</head>
+<body>
+<!--
+  Home-key wrapper. The TV relaunches the home app with __NO_RAISE_WINDOW, which can
+  leave a directly-registered launcher hidden behind the loading screen. This tiny app
+  is registered as db/appfw/home_appid: it immediately launches the real Sahil TV app
+  (SahilTV001.SahilTV), then exits so it never lingers.
+-->
+<script>
+window.addEventListener('load', function () {
+  try {
+    tizen.application.launch(
+      "SahilTV001.SahilTV",
+      function () { setTimeout(function () { try { tizen.application.getCurrentApplication().exit(); } catch (e) {} }, 200); },
+      function () { /* if launch fails, stay so the TV isn't left on a blank home */ }
+    );
+  } catch (e) {}
+});
+</script>
+</body>
+</html>

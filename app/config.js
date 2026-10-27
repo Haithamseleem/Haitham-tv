@@ -9,7 +9,7 @@ window.SAHIL_CONFIG = {
   madhab: "Shafi",          // Shafi | Hanafi  — affects Asr time
 
   theme: "photos",          // "photos" = real city photos, "scene" = illustrated beach
-  cityRotation: ["dubai", "abudhabi", "mecca", "medina", "jerusalem", "doha"],
+  cityRotation: ["live", "dubai", "abudhabi", "cairo", "muscat", "maldives"],
   rotateMinutes: 15,        // switch to the next city every N minutes
 
   clock24h: false,

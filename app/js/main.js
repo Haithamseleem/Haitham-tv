@@ -4,10 +4,13 @@
   Scene.init(document.getElementById("scene"));
   Wallpaper.init(cfg, photos);
 
-  var usePhotos = cfg.theme === "photos";
+  var usePhotos = cfg.theme !== "scene";
   Wallpaper.setEnabled(usePhotos);
 
-  var cities = (cfg.cityRotation && cfg.cityRotation.length) ? cfg.cityRotation : Object.keys(photos);
+  var liveOk = Live.init(document.getElementById("live"));
+  var cities = (cfg.cityRotation && cfg.cityRotation.length) ? cfg.cityRotation.slice() : Object.keys(photos);
+  if (!liveOk) cities = cities.filter(function (c) { return c !== "live"; });
+  if (!cities.length) cities = ["dubai"];
   var ci = 0, lastSlot = "", lastCity = "";
   var PN = { fajr: "Fajr", sunrise: "Shuruq", dhuhr: "Dhuhr", asr: "Asr", maghrib: "Maghrib", isha: "Isha" };
   var prayer = null, prayerDay = -1, lastAzan = "";
@@ -22,6 +25,13 @@
     if (cfg.clock24h) return two(h) + ":" + two(m);
     return (h % 12 || 12) + ":" + two(m) + " " + (h < 12 ? "AM" : "PM");
   }
+  function fmtDur(ms) {
+    if (ms < 0) ms = 0;
+    var s = Math.floor(ms / 1000), h = Math.floor(s / 3600), m = Math.floor((s % 3600) / 60), ss = s % 60;
+    if (h > 0) return h + "h " + m + "m";
+    if (m > 0) return m + "m " + ss + "s";
+    return ss + "s";
+  }
   function renderClock(now) {
     var h = now.getHours(), m = now.getMinutes();
     document.getElementById("clock").textContent = cfg.clock24h ? two(h) + ":" + two(m) : (h % 12 || 12) + ":" + two(m);
@@ -31,7 +41,9 @@
   }
   function renderPrayers(now) {
     if (typeof adhan === "undefined") return;
-    if (now.getDate() !== prayerDay) { prayer = Prayer.compute(cfg, now); prayerDay = now.getDate(); }
+    if (!prayer || now.getDate() !== prayerDay || (prayer.next && now >= prayer.next.date)) {
+      prayer = Prayer.compute(cfg, now); prayerDay = now.getDate();
+    }
     if (!prayer) return;
     var order = ["fajr", "dhuhr", "asr", "maghrib", "isha"], html = "";
     order.forEach(function (k) {
@@ -40,6 +52,13 @@
               '</span><span class="ptime">' + fmtTime(prayer.times[k]) + "</span></li>";
     });
     document.getElementById("prayers").innerHTML = html;
+
+    var cd = document.getElementById("countdown");
+    if (cd && prayer.next) {
+      cd.innerHTML = '<span class="cd-label">' + PN[prayer.next.key] + ' in </span>' +
+                     '<span class="cd-time">' + fmtDur(prayer.next.date - now) + '</span>';
+    }
+
     order.forEach(function (k) {
       var d = prayer.times[k];
       if (d && Math.abs(d - now) < 1000 && lastAzan !== k + now.toDateString()) {
@@ -57,15 +76,23 @@
     azanTimer = setTimeout(function () { b.hidden = true; }, 90000);
     try { if (cfg.sound && cfg.azanSound) new Audio(cfg.azanSound).play(); } catch (e) {}
   }
+  function setLabel(txt) { var l = document.getElementById("city-label"); if (l) l.textContent = txt; }
   function updateWallpaper(now, sun) {
-    var slot = Wallpaper.slotFor(now, sun), city = cities[ci];
+    var city = cities[ci];
+    if (city === "live") {
+      if (lastCity !== "live") { Wallpaper.setEnabled(false); Live.start(); setLabel("Live"); lastCity = "live"; lastSlot = ""; }
+      return;
+    }
+    if (lastCity === "live") { Live.stop(); Wallpaper.setEnabled(true); }
+    if (Wallpaper.hasFailed()) Scene.draw(now, sun);
+    var slot = Wallpaper.slotFor(now, sun);
     if (slot !== lastSlot || city !== lastCity) { Wallpaper.set(city, slot); lastSlot = slot; lastCity = city; }
   }
   function tick() {
     var now = new Date(), sun = sunTimes(now);
     renderClock(now); renderPrayers(now);
-    Scene.draw(now, sun);
-    if (usePhotos && !Wallpaper.hasFailed()) updateWallpaper(now, sun);
+    if (usePhotos) updateWallpaper(now, sun);
+    else Scene.draw(now, sun);
   }
 
   function nextCity(d) { ci = (ci + d + cities.length) % cities.length; lastSlot = ""; }
@@ -73,9 +100,9 @@
 
   window.addEventListener("keydown", function (e) {
     switch (e.keyCode) {
-      case 37: case 65: nextCity(-1); break;   // Left / a
-      case 39: case 68: nextCity(1); break;    // Right / d
-      case 80: usePhotos = !usePhotos; Wallpaper.setEnabled(usePhotos); lastSlot = ""; break; // p
+      case 37: case 65: case 403: nextCity(-1); break;   // Left / a / Red
+      case 39: case 68: case 404: nextCity(1); break;    // Right / d / Green
+      case 80: case 405: usePhotos = !usePhotos; lastSlot = ""; lastCity = ""; if (!usePhotos) { Live.stop(); Wallpaper.setEnabled(false); } else { Wallpaper.setEnabled(true); } break; // p / Yellow
       case 10009: try { tizen.application.getCurrentApplication().exit(); } catch (_) {} break; // TV back
     }
   });

@@ -10,6 +10,8 @@ html, body { width: 100%; height: 100%; overflow: hidden; background: #000; }
 #wallpaper { z-index: 1; opacity: 1; transition: opacity .8s ease; }
 .wp-layer { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 1.2s ease; }
 .wp-layer.show { opacity: 1; }
+#live.live-layer { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; transition: opacity .8s ease; z-index: 1; }
+#live.live-layer.show { opacity: 1; }
 #scrim {
   z-index: 2; pointer-events: none;
   background:
@@ -43,3 +45,6 @@ html, body { width: 100%; height: 100%; overflow: hidden; background: #000; }
 }
 #azan-banner[hidden] { display: none; }
 .azan-icon { font-size: 4.4vh; }
+#countdown { margin-top: 1.4vh; font-size: 1.9vh; color: #fff; text-shadow: 0 1px 8px rgba(0,0,0,.5); }
+#countdown .cd-label { opacity: .72; }
+#countdown .cd-time { font-weight: 500; }

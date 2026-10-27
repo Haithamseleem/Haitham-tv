@@ -1,5 +1,5 @@
-// Sahil TV — user settings. Copy to config.local.js to override without touching git.
-window.SAHIL_CONFIG = {
+// Haitham TV — user settings. Copy to config.local.js to override without touching git.
+window.HAITHAM_CONFIG = {
   // Your location drives both the sunrise/sunset wallpaper and the prayer times.
   location: { lat: 25.2048, lon: 55.2708, name: "Dubai, UAE" },
 
@@ -9,7 +9,7 @@ window.SAHIL_CONFIG = {
   madhab: "Shafi",          // Shafi | Hanafi  — affects Asr time
 
   theme: "photos",          // "photos" = real city photos, "scene" = illustrated beach
-  cityRotation: ["live", "dubai", "abudhabi", "cairo", "muscat", "maldives"],
+  cityRotation: ["live", "mecca", "medina", "jerusalem", "dubai", "abudhabi", "doha", "riyadh", "kuwait", "manama", "muscat", "cairo", "petra", "beirut", "casablanca", "marrakech", "maldives"],
   rotateMinutes: 15,        // switch to the next city every N minutes
 
   clock24h: false,

@@ -1,6 +1,6 @@
-// Sahil TV — boot and wiring.
+// Haitham TV — boot and wiring.
 (function () {
-  var cfg = window.SAHIL_CONFIG, photos = window.SAHIL_PHOTOS;
+  var cfg = window.HAITHAM_CONFIG, photos = window.HAITHAM_PHOTOS;
   Scene.init(document.getElementById("scene"));
   Wallpaper.init(cfg, photos);
 

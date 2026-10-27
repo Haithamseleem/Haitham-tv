@@ -1,5 +1,5 @@
 {
-  "name": "sahil-tv",
+  "name": "haitham-tv",
   "version": "0.1.0",
   "private": true,
   "description": "A calm, ad-free time-of-day wallpaper home screen for Samsung Tizen TVs with prayer times.",
@@ -9,7 +9,7 @@
   "license": "MIT",
 
   "packageType": "app",
-  "appName": "Sahil TV",
+  "appName": "Haitham TV",
   "appPath": "app/index.html",
   "keys": ["ColorF0Red", "ColorF1Green", "ColorF2Yellow", "ColorF3Blue"],
   "evaluateScriptOnDocumentStart": false

@@ -6,5 +6,5 @@ import socketserver
 
 os.chdir(os.path.join(os.path.dirname(os.path.abspath(__file__)), "app"))
 PORT = 8080
-print("Sahil TV preview -> http://localhost:%d  (Ctrl+C to stop)" % PORT)
+print("Haitham TV preview -> http://localhost:%d  (Ctrl+C to stop)" % PORT)
 socketserver.TCPServer(("", PORT), http.server.SimpleHTTPRequestHandler).serve_forever()

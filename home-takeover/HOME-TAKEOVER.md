@@ -1,6 +1,6 @@
-# Sahil TV — Samsung Home takeover (advanced, reversible)
+# Haitham TV — Samsung Home takeover (advanced, reversible)
 
-Make your Samsung TV open **Sahil TV** when you press **Home** / power on, instead of
+Make your Samsung TV open **Haitham TV** when you press **Home** / power on, instead of
 Samsung's own launcher. Based on the method in
 [KSWORK2001/fresh-home](https://github.com/KSWORK2001/fresh-home).
 
@@ -16,8 +16,8 @@ Samsung's own launcher. Based on the method in
 
 ## What it does
 Two apps are installed and signed, then two system keys are pointed at them:
-- `db/appfw/home_appid`    → `SahilHome1.SahilHome` (the tiny wrapper in `wrapper/`)
-- `db/appfw/startup_appid` → `SahilTV001.SahilTV` (the real app, repo root `config.xml`)
+- `db/appfw/home_appid`    → `HaithamHome1.HaithamHome` (the tiny wrapper in `wrapper/`)
+- `db/appfw/startup_appid` → `HaithamTV001.HaithamTV` (the real app, repo root `config.xml`)
 
 The wrapper exists because the TV relaunches Home with `__NO_RAISE_WINDOW`; it launches the
 real app and exits so nothing stays hidden behind the loading screen.
@@ -41,22 +41,22 @@ sdb devices                     # TV should show as "device"
 # 2) Build + sign the real app (run in the repo root)
 tizen build-web -out .buildResult
 tizen package -t wgt -s <your-cert-profile> -- .buildResult
-#   -> produces SahilTV001.SahilTV.wgt (or similar)
+#   -> produces HaithamTV001.HaithamTV.wgt (or similar)
 
 # 3) Build + sign the wrapper (run in home-takeover/wrapper)
 tizen build-web -out .buildResult
 tizen package -t wgt -s <your-cert-profile> -- .buildResult
-#   -> produces SahilHome1.SahilHome.wgt
+#   -> produces HaithamHome1.HaithamHome.wgt
 
 # 4) Install both
-sdb install <path-to>/SahilTV001.SahilTV.wgt
-sdb install <path-to>/SahilHome1.SahilHome.wgt
+sdb install <path-to>/HaithamTV001.HaithamTV.wgt
+sdb install <path-to>/HaithamHome1.HaithamHome.wgt
 
-# 5) Point Home at Sahil TV (backs up originals first)
+# 5) Point Home at Haitham TV (backs up originals first)
 powershell -File home-takeover/set-home.ps1 -Tv 192.168.1.182
 ```
 
-Press **Home** on the remote — Sahil TV should open.
+Press **Home** on the remote — Haitham TV should open.
 
 ## Undo
 ```bash

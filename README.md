@@ -1,4 +1,4 @@
-# Sahil TV
+# Haitham TV
 
 A calm, ad-free home screen for Samsung Tizen TVs — a **time-of-day wallpaper** of Arab
 cities (Dubai, Abu Dhabi, Mecca, Medina, and more) that shifts from dawn to night with your
@@ -51,7 +51,7 @@ of git):
    ```bash
    sdb connect <TV_IP>
    tizen package -t wgt -s <your-cert-profile> -- .
-   tizen install -n SahilTV.wgt -t <device>
+   tizen install -n HaithamTV.wgt -t <device>
    ```
    (`tools/install.ps1` wraps these steps.)
 

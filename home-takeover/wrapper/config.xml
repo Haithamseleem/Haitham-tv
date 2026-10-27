@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<widget xmlns="http://www.w3.org/ns/widgets" xmlns:tizen="http://tizen.org/ns/widgets" id="http://sahil.tv/home" version="0.1.0" viewmodes="maximized">
-  <tizen:application id="SahilHome1.SahilHome" package="SahilHome1" required_version="2.4"/>
-  <name>Sahil Home</name>
+<widget xmlns="http://www.w3.org/ns/widgets" xmlns:tizen="http://tizen.org/ns/widgets" id="http://haitham.tv/home" version="0.1.0" viewmodes="maximized">
+  <tizen:application id="HaithamHome1.HaithamHome" package="HaithamHome1" required_version="2.4"/>
+  <name>Haitham Home</name>
   <content src="index.html"/>
   <icon src="icon.png"/>
   <feature name="http://tizen.org/feature/screen.size.all"/>

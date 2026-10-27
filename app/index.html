@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"/>
+<title>Sahil TV</title>
+<link rel="stylesheet" href="styles.css"/>
+</head>
+<body>
+<div id="app">
+  <canvas id="scene" aria-hidden="true"></canvas>
+  <div id="wallpaper">
+    <img id="wp-a" class="wp-layer" alt=""/>
+    <img id="wp-b" class="wp-layer" alt=""/>
+  </div>
+  <div id="scrim"></div>
+  <section id="glass" aria-live="polite">
+    <div id="clock">--:--</div>
+    <div id="date"></div>
+    <div id="location"></div>
+    <ul id="prayers"></ul>
+  </section>
+  <div id="city-label"></div>
+  <div id="azan-banner" hidden><span class="azan-icon" aria-hidden="true">&#9770;</span><span id="azan-text"></span></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/suncalc@1.9.0/suncalc.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/adhan@4.4.3/dist/adhan.umd.min.js"></script>
+<script src="config.js"></script>
+<script src="js/photos.js"></script>
+<script src="js/scene.js"></script>
+<script src="js/wallpaper.js"></script>
+<script src="js/prayer.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>

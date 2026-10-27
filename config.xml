@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<widget xmlns="http://www.w3.org/ns/widgets" xmlns:tizen="http://tizen.org/ns/widgets" id="http://sahil.tv/app" version="0.1.0" viewmodes="maximized">
+  <tizen:application id="SahilTV001.SahilTV" package="SahilTV001" required_version="2.4"/>
+  <name>Sahil TV</name>
+  <author>Sahil TV contributors</author>
+  <content src="app/index.html"/>
+  <icon src="icon.png"/>
+  <feature name="http://tizen.org/feature/screen.size.all"/>
+  <tizen:privilege name="http://tizen.org/privilege/internet"/>
+  <tizen:profile name="tv"/>
+  <tizen:setting screen-orientation="landscape" background-support="disable" encryption="disable" hwkey-event="enable"/>
+</widget>

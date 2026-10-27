@@ -1,0 +1,10 @@
+{
+  "name": "sahil-tv",
+  "version": "0.1.0",
+  "private": true,
+  "description": "A calm, ad-free time-of-day wallpaper home screen for Samsung Tizen TVs with prayer times.",
+  "scripts": {
+    "dev": "npx --yes serve app -l 8080"
+  },
+  "license": "MIT"
+}

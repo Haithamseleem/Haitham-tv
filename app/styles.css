@@ -1,50 +1,205 @@
-* { margin: 0; padding: 0; box-sizing: border-box; }
-html, body { width: 100%; height: 100%; overflow: hidden; background: #000; }
-#app {
-  position: relative; width: 100vw; height: 100vh; color: #fff;
-  font-family: -apple-system, "Segoe UI", Roboto, "Noto Sans Arabic", sans-serif;
-  user-select: none; cursor: none;
+/* Haitham TV - Apple TV-style home. Animates transform and opacity only. */
+
+* { box-sizing: border-box; }
+html, body {
+  margin: 0; width: 100%; height: 100%; overflow: hidden; background: #000; color: #fff;
+  font-family: "SamsungOne", "Segoe UI", "Helvetica Neue", "Noto Sans Arabic", Tahoma, sans-serif;
+  -webkit-font-smoothing: antialiased;
 }
-#scene, #wallpaper, #scrim { position: absolute; inset: 0; }
-#scene { z-index: 0; width: 100%; height: 100%; }
-#wallpaper { z-index: 1; opacity: 1; transition: opacity .8s ease; }
-.wp-layer { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 1.2s ease; }
-.wp-layer.show { opacity: 1; }
-#live.live-layer { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; transition: opacity .8s ease; z-index: 1; }
-#live.live-layer.show { opacity: 1; }
+.ar, [lang="ar"] { font-family: "SamsungOneArabic", "Noto Sans Arabic", "Segoe UI", Tahoma, sans-serif; direction: rtl; }
+
+#bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
 #scrim {
-  z-index: 2; pointer-events: none;
-  background:
-    linear-gradient(to right, rgba(0,0,0,.5) 0%, rgba(0,0,0,.18) 34%, rgba(0,0,0,0) 58%),
-    linear-gradient(to top, rgba(0,0,0,.45), rgba(0,0,0,0) 38%);
+  position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none;
+  background: linear-gradient(to bottom, rgba(0,0,0,0.25) 0%, rgba(0,0,0,0) 30%, rgba(0,0,0,0.15) 50%, rgba(0,0,0,0.7) 100%);
+  opacity: 1; transition: opacity 0.6s ease;
 }
-#glass {
-  position: absolute; z-index: 3; top: 6vh; left: 4vw; padding: 2.4vh 2.6vw; border-radius: 24px;
-  background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.28);
-  backdrop-filter: blur(18px) saturate(1.3); -webkit-backdrop-filter: blur(18px) saturate(1.3);
+body.shelf #scrim { opacity: 0.35; }
+body.deep #scrim { opacity: 1; }
+#scrim::after {
+  content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+  background: rgba(0,0,0,0.45); opacity: 0; transition: opacity 0.6s ease;
 }
-#clock { font-size: 9vh; font-weight: 500; line-height: 1; letter-spacing: -2px; text-shadow: 0 2px 18px rgba(0,0,0,.45); }
-#date, #location { font-size: 2.2vh; margin-top: .7vh; text-shadow: 0 1px 8px rgba(0,0,0,.55); }
-#date { opacity: .92; }
-#location { opacity: .72; }
-#prayers { list-style: none; display: flex; gap: .9vw; margin-top: 2vh; }
-#prayers li {
-  display: flex; flex-direction: column; align-items: center; gap: .3vh; min-width: 7.4vw;
-  padding: 1vh 1vw; border-radius: 999px; background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.2);
-  transition: background .4s, border-color .4s;
+body.deep #scrim::after { opacity: 1; }
+
+#ui { position: absolute; top: 0; left: 0; width: 100%; height: 100%; transition: opacity 0.8s ease; }
+body.saver #ui { opacity: 0; }
+
+.glass {
+  background: rgba(30, 30, 40, 0.38);
+  border: 1px solid rgba(255,255,255,0.14);
+  border-radius: 2.2vh;
+  box-shadow: 0 2vh 5vh rgba(0,0,0,0.35);
 }
-#prayers li .pname { font-size: 1.5vh; opacity: .85; }
-#prayers li .ptime { font-size: 1.9vh; font-weight: 500; }
-#prayers li.next { background: rgba(255,255,255,.28); border-color: rgba(255,255,255,.55); }
-#city-label { position: absolute; z-index: 3; right: 3vw; bottom: 3vh; font-size: 2vh; opacity: .82; text-shadow: 0 1px 10px rgba(0,0,0,.65); }
-#azan-banner {
-  position: absolute; z-index: 4; left: 50%; top: 50%; transform: translate(-50%,-50%);
-  display: flex; align-items: center; gap: 1.2vw; padding: 2.6vh 3.2vw; border-radius: 22px; font-size: 3.2vh;
-  background: rgba(0,0,0,.5); border: 1px solid rgba(255,255,255,.3);
-  backdrop-filter: blur(22px); -webkit-backdrop-filter: blur(22px);
+
+/* ---------- Top Shelf ---------- */
+#shelf { position: absolute; top: 0; left: 0; width: 100%; height: 56vh; transition: transform 0.6s ease, opacity 0.6s ease; }
+body.deep #shelf { opacity: 0; transform: translateY(-6vh); }
+
+#clock-card { position: absolute; top: 6vh; left: 5vw; text-shadow: 0 0.3vh 2vh rgba(0,0,0,0.45); }
+#clock { font-size: 13vh; font-weight: 200; letter-spacing: -0.02em; line-height: 1; font-variant-numeric: tabular-nums; }
+#clock-ampm { font-size: 4vh; font-weight: 400; margin-left: 1vh; opacity: 0.85; }
+#date-line { font-size: 3vh; font-weight: 400; margin-top: 1.2vh; opacity: 0.95; }
+#hijri-line { font-size: 2.6vh; margin-top: 0.6vh; opacity: 0.85; }
+#city-line { font-size: 2.2vh; margin-top: 1.2vh; letter-spacing: 0.2em; text-transform: uppercase; opacity: 0.7; }
+
+#next-card {
+  position: absolute; top: 6vh; right: 5vw; display: flex; align-items: center; padding: 2.4vh 3vh 2.4vh 2.4vh;
+  transition: transform 0.6s ease;
 }
-#azan-banner[hidden] { display: none; }
-.azan-icon { font-size: 4.4vh; }
-#countdown { margin-top: 1.4vh; font-size: 1.9vh; color: #fff; text-shadow: 0 1px 8px rgba(0,0,0,.5); }
-#countdown .cd-label { opacity: .72; }
-#countdown .cd-time { font-weight: 500; }
+#ring { width: 17vh; height: 17vh; transform: rotate(-90deg); }
+.ring-track { fill: none; stroke: rgba(255,255,255,0.15); stroke-width: 7; }
+.ring-fill {
+  fill: none; stroke: #f0c878; stroke-width: 7; stroke-linecap: round;
+  stroke-dasharray: 326.73; stroke-dashoffset: 326.73;
+  transition: stroke-dashoffset 1s linear, stroke 2s ease;
+}
+body.soon .ring-fill { stroke: #ff9a4d; }
+#ring-center { position: absolute; left: 2.4vh; width: 17vh; text-align: center; }
+#ring-left { font-size: 3.6vh; font-weight: 600; font-variant-numeric: tabular-nums; }
+#ring-sub { font-size: 1.6vh; opacity: 0.7; text-transform: uppercase; letter-spacing: 0.15em; }
+#next-text { margin-left: 3vh; min-width: 22vh; }
+.next-label { font-size: 1.8vh; letter-spacing: 0.25em; text-transform: uppercase; opacity: 0.7; }
+#next-ar { font-size: 5.4vh; line-height: 1.2; font-family: "SamsungOneArabic", "Noto Sans Arabic", Tahoma, sans-serif; }
+#next-en { font-size: 3vh; font-weight: 300; }
+#next-time { font-size: 3.2vh; font-weight: 600; color: #f0c878; margin-top: 0.4vh; font-variant-numeric: tabular-nums; }
+
+/* ---------- Rows ---------- */
+#rows { position: absolute; left: 0; top: 58vh; width: 100%; height: 100vh; transition: transform 0.6s ease, opacity 0.6s ease; }
+body.shelf #rows { transform: translateY(30vh); opacity: 0; }
+#track { transition: transform 0.55s cubic-bezier(.2,.8,.2,1); }
+.row { height: 34vh; padding: 0 5vw; }
+.row-title { font-size: 2.4vh; font-weight: 600; opacity: 0.0; margin-bottom: 2vh; transition: opacity 0.4s ease; text-shadow: 0 0.2vh 1vh rgba(0,0,0,0.5); }
+.row.active .row-title, body.deep .row-title { opacity: 0.9; }
+.row-title-ar { font-weight: 400; opacity: 0.7; margin-left: 1.2vh; font-family: "SamsungOneArabic", "Noto Sans Arabic", Tahoma, sans-serif; }
+.row { opacity: 0.55; transition: opacity 0.4s ease; }
+.row.active { opacity: 1; }
+.row-items { display: flex; transition: transform 0.45s cubic-bezier(.2,.8,.2,1); }
+
+/* Tiles */
+.tile {
+  position: relative; flex: 0 0 auto; margin-right: 2.2vw; border-radius: 1.6vh; overflow: visible;
+  transform: scale(1); transition: transform 0.25s ease;
+}
+.tile-face {
+  position: relative; width: 100%; height: 100%; border-radius: 1.6vh; overflow: hidden;
+  box-shadow: 0 1vh 2.5vh rgba(0,0,0,0.35);
+}
+.tile-face::before {          /* lifted shadow, faded in on focus */
+  content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%; border-radius: 1.6vh;
+  box-shadow: 0 3vh 5vh rgba(0,0,0,0.6); opacity: 0; transition: opacity 0.25s ease;
+}
+.tile-face::after {           /* light sheen sweep, transform only */
+  content: ""; position: absolute; top: -50%; left: -60%; width: 40%; height: 200%;
+  background: linear-gradient(90deg, rgba(255,255,255,0), rgba(255,255,255,0.28), rgba(255,255,255,0));
+  transform: translateX(0) rotate(20deg); opacity: 0;
+}
+.tile.focus { transform: scale(1.12) translateY(-1vh); z-index: 2; }
+.tile.focus .tile-face::before { opacity: 1; }
+.tile.focus .tile-face::after { animation: sheen 1.2s ease 0.1s 1; }
+@keyframes sheen { 0% { opacity: 0; transform: translateX(0) rotate(20deg); } 30% { opacity: 1; } 100% { opacity: 0; transform: translateX(420%) rotate(20deg); } }
+.tile.focus.tilt-l { transform: scale(1.12) translateY(-1vh) rotate(-1deg); }
+.tile.focus.tilt-r { transform: scale(1.12) translateY(-1vh) rotate(1deg); }
+.tile-label { position: absolute; left: 0; right: 0; top: 100%; margin-top: 1.6vh; text-align: center; font-size: 2.2vh; opacity: 0; transition: opacity 0.25s ease; text-shadow: 0 0.2vh 1vh rgba(0,0,0,0.6); }
+.tile.focus .tile-label { opacity: 1; }
+
+.app { width: 14vw; height: 8.4vw; }
+.app .tile-face { display: flex; align-items: center; justify-content: center; }
+.app-glyph { font-size: 5vh; font-weight: 700; letter-spacing: -0.02em; }
+.app-glyph.small { font-size: 3.6vh; }
+
+.pcard { width: 13vw; height: 21vh; }
+.pcard .tile-face { background: rgba(25,25,35,0.55); border: 1px solid rgba(255,255,255,0.12); padding: 2.2vh 2vh; display: flex; flex-direction: column; justify-content: space-between; }
+.pcard .p-ar { font-size: 4.4vh; font-family: "SamsungOneArabic", "Noto Sans Arabic", Tahoma, sans-serif; }
+.pcard .p-en { font-size: 2.4vh; opacity: 0.8; }
+.pcard .p-time { font-size: 4vh; font-weight: 600; font-variant-numeric: tabular-nums; }
+.pcard.past .tile-face { opacity: 0.55; }
+.pcard.minor .p-ar { font-size: 3.4vh; opacity: 0.8; }
+.pcard.next .tile-face { background: rgba(240,200,120,0.22); border-color: rgba(240,200,120,0.7); }
+.pcard.next .p-time { color: #f0c878; }
+
+.dcard { width: 11.2vw; height: 25vh; }
+.dcard .tile-face { background: rgba(25,25,35,0.55); border: 1px solid rgba(255,255,255,0.12); padding: 1.8vh 1.6vh; }
+.dcard.today .tile-face { border-color: rgba(240,200,120,0.7); }
+.d-head { font-size: 2.2vh; font-weight: 600; }
+.d-sub { font-size: 1.6vh; opacity: 0.65; margin-bottom: 1vh; }
+.d-row { display: flex; justify-content: space-between; font-size: 1.85vh; line-height: 1.65; font-variant-numeric: tabular-nums; }
+.d-row span:first-child { opacity: 0.7; }
+
+.qcard { width: 22vw; height: 23vh; }
+.qcard .tile-face { background: rgba(25,25,35,0.55); border: 1px solid rgba(255,255,255,0.12); padding: 2.2vh 2.4vh; display: flex; align-items: center; }
+.compass { position: relative; width: 17vh; height: 17vh; flex: 0 0 auto; border-radius: 50%; border: 2px solid rgba(255,255,255,0.35); }
+.compass .n { position: absolute; top: 0.6vh; left: 0; right: 0; text-align: center; font-size: 1.6vh; opacity: 0.7; }
+.needle { position: absolute; left: 50%; top: 50%; width: 0.6vh; height: 7.2vh; margin-left: -0.3vh; margin-top: -7.2vh; transform-origin: 50% 100%; background: linear-gradient(#f0c878, rgba(240,200,120,0.2)); border-radius: 0.3vh; transition: transform 1s ease; }
+.kaaba { position: absolute; left: 50%; top: 50%; width: 1.6vh; height: 1.6vh; margin: -0.8vh 0 0 -0.8vh; background: #111; border: 1px solid #f0c878; }
+.q-text { margin-left: 2.6vh; }
+.q-big { font-size: 4.6vh; font-weight: 600; }
+.q-small { font-size: 2vh; opacity: 0.75; margin-top: 0.6vh; }
+.q-ar { font-size: 3.2vh; font-family: "SamsungOneArabic", "Noto Sans Arabic", Tahoma, sans-serif; }
+
+/* ---------- Glow (final minutes) is the .hs-glow layer from scenes ---------- */
+.hs-root { position: absolute; top: 0; left: 0; width: 100%; height: 100%; overflow: hidden; background: #000; }
+.hs-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: block; }
+.hs-glow {
+  background: radial-gradient(ellipse at 50% 85%, rgba(255,140,60,0.45), rgba(60,20,0,0.6) 70%);
+  opacity: 0; transition: opacity 4s linear; pointer-events: none;
+}
+
+/* ---------- Screensaver ---------- */
+#saver { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; visibility: hidden; transition: opacity 1.5s ease, visibility 0s linear 1.5s; overflow: hidden; background: transparent; }
+body.saver #saver { opacity: 1; visibility: visible; transition: opacity 1.5s ease; }
+.saver-img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-size: cover; background-position: center; opacity: 0; transition: opacity 3s ease; }
+.saver-img.on { opacity: 1; }
+.saver-img.kb1 { animation: kb1 26s linear forwards; }
+.saver-img.kb2 { animation: kb2 26s linear forwards; }
+@keyframes kb1 { from { transform: scale(1.04) translate(0, 0); } to { transform: scale(1.18) translate(-3%, -2%); } }
+@keyframes kb2 { from { transform: scale(1.18) translate(2%, 1%); } to { transform: scale(1.04) translate(0, 0); } }
+#saver-label { position: absolute; left: 5vw; bottom: 7vh; text-shadow: 0 0.3vh 2vh rgba(0,0,0,0.6); }
+#saver-time { font-size: 7vh; font-weight: 200; }
+#saver-city { font-size: 2.4vh; letter-spacing: 0.3em; text-transform: uppercase; opacity: 0.8; }
+
+/* ---------- Toast + debug ---------- */
+#toast { position: absolute; left: 50%; bottom: 6vh; transform: translate(-50%, 2vh); padding: 1.4vh 3vh; border-radius: 4vh; background: rgba(20,20,28,0.85); font-size: 2.2vh; opacity: 0; transition: opacity 0.3s ease, transform 0.3s ease; z-index: 50; }
+#toast.on { opacity: 1; transform: translate(-50%, 0); }
+#debug { position: absolute; left: 1vw; top: 1vh; z-index: 60; font: 1.6vh/1.4 monospace; background: rgba(0,0,0,0.6); padding: 0.8vh 1.2vh; border-radius: 0.6vh; display: none; white-space: pre; }
+body.debug #debug { display: block; }
+
+/* ---------- Azan takeover (upgraded #azan-banner) ---------- */
+#azan-banner.az-takeover {
+  position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1000;
+  display: flex; align-items: center; justify-content: center;
+  background: radial-gradient(ellipse at 50% 45%, rgba(10,22,48,0.93), rgba(2,6,16,0.98) 70%);
+  color: #fff; opacity: 0; visibility: hidden;
+  transition: opacity 1.2s ease, visibility 0s linear 1.2s;
+}
+#azan-banner.az-takeover.az-show { opacity: 1; visibility: visible; transition: opacity 1.2s ease; }
+.az-stage { position: relative; width: 60vh; height: 60vh; display: flex; align-items: center; justify-content: center; }
+.az-ring { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border-radius: 50%; border: 2px solid rgba(240,200,120,0.55); opacity: 0; transform: scale(0.55); }
+.az-show .az-ring { animation: az-ring 6s ease-out infinite; }
+.az-show .az-ring:nth-child(2) { animation-delay: 2s; }
+.az-show .az-ring:nth-child(3) { animation-delay: 4s; }
+@keyframes az-ring { 0% { opacity: 0; transform: scale(0.55); } 15% { opacity: 0.8; } 100% { opacity: 0; transform: scale(1.35); } }
+.az-star { position: absolute; width: 92%; height: 92%; top: 4%; left: 4%; opacity: 0.22; }
+.az-star svg { width: 100%; height: 100%; }
+.az-show .az-star { animation: az-spin 90s linear infinite; }
+.az-star.az-inner { width: 70%; height: 70%; top: 15%; left: 15%; opacity: 0.14; }
+.az-show .az-star.az-inner { animation: az-spin 60s linear infinite reverse; }
+@keyframes az-spin { to { transform: rotate(360deg); } }
+.az-text { position: relative; text-align: center; transform: translateY(12px); opacity: 0; }
+.az-show .az-text { animation: az-rise 1.6s 0.4s ease forwards; }
+@keyframes az-rise { to { transform: translateY(0); opacity: 1; } }
+.az-label { font-size: 2.2vh; letter-spacing: 0.4em; text-transform: uppercase; color: #f0c878; opacity: 0.9; }
+.az-ar { font-size: 13vh; line-height: 1.15; color: #fff3d6; direction: rtl; text-shadow: 0 0 30px rgba(240,200,120,0.45); font-family: "SamsungOneArabic", "Noto Sans Arabic", Tahoma, sans-serif; }
+.az-en { font-size: 4.2vh; font-weight: 300; letter-spacing: 0.12em; margin-top: 0.4vh; }
+.az-time { font-size: 5vh; font-weight: 600; margin-top: 1.6vh; color: #f0c878; font-variant-numeric: tabular-nums; }
+.az-dua { position: absolute; bottom: 7vh; left: 10%; right: 10%; text-align: center; opacity: 0; }
+.az-show .az-dua { animation: az-fade 2s 1.6s ease forwards; }
+@keyframes az-fade { to { opacity: 1; } }
+.az-dua-ar { font-size: 3.4vh; direction: rtl; color: #fff3d6; font-family: "SamsungOneArabic", "Noto Sans Arabic", Tahoma, sans-serif; }
+.az-dua-en { font-size: 2.2vh; margin-top: 0.8vh; color: rgba(255,255,255,0.7); font-style: italic; }
+.az-hint { position: absolute; top: 4vh; right: 4vw; font-size: 1.8vh; color: rgba(255,255,255,0.45); }
+.az-timer { position: absolute; left: 0; bottom: 0; height: 4px; width: 100%; background: #f0c878; transform-origin: left; transform: scaleX(1); opacity: 0.6; }
+
+@media (prefers-reduced-motion: reduce) {
+  .az-show .az-ring, .az-show .az-star, .saver-img.kb1, .saver-img.kb2, .tile.focus .tile-face::after { animation: none; }
+}

@@ -1,82 +1,63 @@
 # Haitham TV
 
-A calm, ad-free home screen for Samsung Tizen TVs — a **time-of-day wallpaper** of Arab
-cities (Dubai, Abu Dhabi, Mecca, Medina, and more) that shifts from dawn to night with your
-real local sunrise/sunset, an Apple-TV-style **frosted-glass clock**, and **prayer times with
-an azan reminder**.
-
-> Status: early scaffold. The wallpaper photos are placeholders until licensed images are
-> curated — see [Wallpapers & licensing](#wallpapers--licensing).
+An Apple TV-style home screen for a Samsung BU8000 (Tizen 6.5), launched through TizenBrew.
+Plain ES2017 with no build step and no frameworks. It animates only transforms and opacity, so it stays smooth on the TV.
 
 ## Features
 
-- **Dynamic time-of-day wallpaper** — each city has dawn / day / dusk / night photos; the app
-  picks the one matching the real sun position for your location.
-- **Prayer times + azan reminder** — computed offline with [adhan.js], method configurable
-  (Dubai, Umm al-Qura, MWL, Egyptian, …).
-- **Glass clock & date** — tvOS-style frosted panel over the wallpaper.
-- **City rotation** — cycles through your chosen cities; arrow keys change city on the fly.
-- **Illustrated fallback** — an animated beach scene (`theme: "scene"`) that also shows if a
-  photo fails to load. No blank screens.
+- **Top Shelf:** a full-screen real city photo, kept clean. The only per-prayer change is a soft colour grade: dawn at Fajr, bright at Dhuhr, gold at Asr, sunset at Maghrib, night at Isha. Photos rotate with a crossfade.
+- **Clock card:** big clock, Gregorian and Hijri (Umm al-Qura) dates, and the city.
+- **Next-prayer card:** Arabic and English name, the time, and a progress ring showing the time elapsed since the previous prayer.
+- **App row:** rounded tvOS-style tiles that scale up with a sheen when focused (YouTube, Netflix, Shahid, Prime, Disney+, Live TV, Today, Weekly, Qibla).
+- **Rows below:** Today's prayers (sunrise included), a 7-day timetable, the Qibla compass with its distance to Makkah, the Hijri date, and the city switcher.
+- **Azan takeover:** a full-screen card at each prayer time with the name, time, a rotating star and rings, and the dua after the adhan. Audio plays only if `azanAudio` is set. OK or Back closes it, and it closes on its own after `azanTimeoutSec`.
+- **Final-minutes glow:** during the last `glowMinutes` before a prayer, the screen slowly warms and dims and the ring turns orange.
+- **Aerial screensaver:** after `screensaverMinutes` idle, a slow Ken Burns pan over the city photos with the time and city.
+- **Drawn fallback:** if no photo is set or a photo fails to load, a 2D-canvas scene for the current prayer is shown instead: Fajr dawn glow, Dhuhr sun with rays, Asr light with dust motes, Maghrib sunset over the Gulf, or Isha stars, moon and an occasional shooting star, all behind a Gulf skyline. It renders at 0.5 scale and is throttled to 30 fps. It uses no WebGL.
 
-## Quick start (browser)
+## Remote
 
-No TV needed to iterate on the look:
-
-```bash
-python dev-server.py      # serves app/ at http://localhost:8080
-```
-
-Then open <http://localhost:8080>. Press **← / →** (or **a / d**) to change city, **p** to
-toggle photo vs. illustrated scene.
-
-## Configure
-
-Edit [`app/config.js`](app/config.js) (or copy it to `app/config.local.js` to keep changes out
-of git):
-
-| Setting | What it does |
+| Key | Action |
 |---|---|
-| `location` | `{ lat, lon, name }` — drives sunrise/sunset **and** prayer times |
-| `prayerMethod` / `madhab` | adhan.js calculation method and Asr rule |
-| `theme` | `"photos"` or `"scene"` |
-| `cityRotation` / `rotateMinutes` | which cities to cycle, and how often |
-| `clock24h`, `language`, `sound`, `azanSound` | clock format, en/ar, azan audio |
+| Left / Right | Move along a row |
+| Up / Down | Move between rows. Up from the app row shows the clean Top Shelf |
+| OK | Open the app or row, or change city on the City tile |
+| Back | Return to the app row, then the Top Shelf. Closes the azan card |
+| Red | Start the screensaver |
+| Green | Next city |
 
-## Install on a Samsung TV
+Keyboard arrows, Enter and Esc work the same in the browser preview.
 
-1. On the TV: **Apps** → type `12345` → turn **Developer Mode** on → enter your PC's IP → reboot.
-2. On your PC: install [Tizen Studio] + the TV extension, create a Samsung certificate.
-3. Package & install:
-   ```bash
-   sdb connect <TV_IP>
-   tizen package -t wgt -s <your-cert-profile> -- .
-   tizen install -n HaithamTV.wgt -t <device>
-   ```
-   (`tools/install.ps1` wraps these steps.)
+## Settings: `app/config.js`
 
-Self-signed apps expire after ~30–60 days — just re-run the install. A `icon.png` (512×512) is
-required for packaging; add your own.
+Cities and calculation methods, real photo URLs (one list per city, optionally per prayer), apps and Tizen app IDs, 12/24-hour clock, azan audio and timeout, glow minutes, screensaver delay, scene fps and scale, and debug.
 
-## Wallpapers & licensing
+**Photos:** paste your city photo URLs into `photos`, for example `photos: { 'Dubai': ['https://…/1.jpg', 'https://…/2.jpg'] }`.
+If you have the old `app/js/photos.js`, copy its URLs from there.
 
-The photo URLs in [`app/js/photos.js`](app/js/photos.js) are **placeholders**. Before publishing,
-replace each slot with a properly licensed image and record it in [CREDITS.md](CREDITS.md):
+**App IDs to verify on the TV:** YouTube `111299001912`, Netflix `3201907018807`, Prime `3201910019365`, Disney+ `3201901017640`, Shahid `3201703012079`, Live TV `org.tizen.tv-viewer`. If a tile shows "Could not open", that ID is wrong for your TV model. Fix it in `config.js`.
 
-- **Unsplash / Pexels** — free to use and bundle, no permission needed.
-- **Wikimedia Commons** — great for landmarks; most require attribution (CC BY / BY-SA).
+## Debug and testing
 
-Never ship random images pulled from the web.
+Open `app/index.html?debug=1`, or set `debug: true`. You can also fake the clock with `?time=2026-10-28T17:40`.
 
-## Credits
+| Key | Action |
+|---|---|
+| 1–5 | Force the Fajr / Dhuhr / Asr / Maghrib / Isha scene |
+| N | Jump to 1 minute before the next prayer (the azan fires a minute later) |
+| G | Jump to 10 minutes before the next prayer (glow test) |
+| A | Show the azan card now |
+| S | Start the screensaver |
+| C | Next city |
+| 0 | Back to the real clock |
 
-- Prayer times: [adhan.js] (MIT) · Sun position: [SunCalc] (BSD-2)
-- Wallpaper photos: see [CREDITS.md](CREDITS.md)
+Run the preview locally with `python -m http.server 8766 --directory app`, then open <http://127.0.0.1:8766/?debug=1>.
 
-## License
+## Install with TizenBrew
 
-MIT — see [LICENSE](LICENSE). Bundled photos are licensed separately (CREDITS.md).
+1. On the TV, open **TizenBrew** and press the **green** button to open the module manager.
+2. Delete the old home-screen module (the one under the previous repo name) if it is still listed.
+3. Choose **Add GitHub module** and enter `Haithamseleem/haitham-tv`.
+4. Open **Haitham TV** from the TizenBrew list. To make it start automatically, set it as the autolaunch module in TizenBrew settings if your version has that option.
 
-[adhan.js]: https://github.com/batoulapps/adhan-js
-[SunCalc]: https://github.com/mourner/suncalc
-[Tizen Studio]: https://developer.tizen.org/development/tizen-studio/download
+Haitham TV runs as a full-screen app. It cannot replace Samsung's own system home bar.

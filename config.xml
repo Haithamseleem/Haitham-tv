@@ -1,16 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<widget xmlns="http://www.w3.org/ns/widgets" xmlns:tizen="http://tizen.org/ns/widgets" id="http://haitham.tv/app" version="0.1.0" viewmodes="maximized">
-  <tizen:application id="HaithamTV001.HaithamTV" package="HaithamTV001" required_version="2.4"/>
-  <name>Haitham TV</name>
-  <author>Haitham TV contributors</author>
-  <content src="app/index.html"/>
-  <icon src="icon.png"/>
-  <feature name="http://tizen.org/feature/screen.size.all"/>
-  <tizen:privilege name="http://tizen.org/privilege/internet"/>
-  <tizen:app-control>
-    <tizen:src name="app/index.html" reload="disable"/>
-    <tizen:operation name="http://tizen.org/appcontrol/operation/main"/>
-  </tizen:app-control>
-  <tizen:profile name="tv"/>
-  <tizen:setting screen-orientation="landscape" background-support="disable" encryption="disable" hwkey-event="enable"/>
+<widget xmlns="http://www.w3.org/ns/widgets" xmlns:tizen="http://tizen.org/ns/widgets" id="http://github.com/Haithamseleem/haitham-tv" version="2.0.0" viewmodes="maximized">
+    <tizen:application id="HaithamTV1.HaithamTV" package="HaithamTV1" required_version="6.5"/>
+    <name>Haitham TV</name>
+    <content src="app/index.html"/>
+    <feature name="http://tizen.org/feature/screen.size.all"/>
+    <tizen:privilege name="http://tizen.org/privilege/internet"/>
+    <tizen:privilege name="http://tizen.org/privilege/application.launch"/>
+    <tizen:privilege name="http://tizen.org/privilege/tv.inputdevice"/>
+    <tizen:profile name="tv-samsung"/>
+    <tizen:setting screen-orientation="landscape" context-menu="disable" background-support="disable" encryption="disable" install-location="auto" hwkey-event="enable"/>
+    <access origin="*" subdomains="true"/>
 </widget>

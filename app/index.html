@@ -1,39 +1,77 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"/>
+<meta charset="utf-8">
+<meta name="viewport" content="width=1920, height=1080">
 <title>Haitham TV</title>
-<link rel="stylesheet" href="styles.css"/>
+<link rel="stylesheet" href="styles.css">
 </head>
 <body>
-<div id="app">
-  <canvas id="scene" aria-hidden="true"></canvas>
-  <canvas id="live" class="live-layer" aria-hidden="true"></canvas>
-  <div id="wallpaper">
-    <img id="wp-a" class="wp-layer" alt=""/>
-    <img id="wp-b" class="wp-layer" alt=""/>
-  </div>
+  <!-- Wallpaper: real city photo (colour graded per prayer) or drawn per-prayer scene -->
+  <div id="bg"></div>
   <div id="scrim"></div>
-  <section id="glass" aria-live="polite">
-    <div id="clock">--:--</div>
-    <div id="date"></div>
-    <div id="location"></div>
-    <ul id="prayers"></ul>
-    <div id="countdown"></div>
-  </section>
-  <div id="city-label"></div>
-  <div id="azan-banner" hidden><span class="azan-icon" aria-hidden="true">&#9770;</span><span id="azan-text"></span></div>
-</div>
 
-<script src="https://cdn.jsdelivr.net/npm/suncalc@1.9.0/suncalc.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/adhan@4.4.3/dist/adhan.umd.min.js"></script>
-<script src="config.js"></script>
-<script src="js/photos.js"></script>
-<script src="js/scene.js"></script>
-<script src="js/wallpaper.js"></script>
-<script src="js/live.js"></script>
-<script src="js/prayer.js"></script>
-<script src="js/main.js"></script>
+  <div id="ui">
+    <!-- Top Shelf -->
+    <section id="shelf">
+      <div id="clock-card">
+        <div id="clock"><span id="clock-time">--:--</span><span id="clock-ampm"></span></div>
+        <div id="date-line"></div>
+        <div id="hijri-line"></div>
+        <div id="city-line"></div>
+      </div>
+
+      <div id="next-card" class="glass">
+        <svg id="ring" viewBox="0 0 120 120" aria-hidden="true">
+          <circle class="ring-track" cx="60" cy="60" r="52"></circle>
+          <circle class="ring-fill" id="ring-fill" cx="60" cy="60" r="52"></circle>
+        </svg>
+        <div id="ring-center"><div id="ring-left">--</div><div id="ring-sub">left</div></div>
+        <div id="next-text">
+          <div class="next-label">Next prayer</div>
+          <div id="next-ar"></div>
+          <div id="next-en"></div>
+          <div id="next-time"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Rows (Apple TV style). Up from the app row = clean Top Shelf. -->
+    <section id="rows">
+      <div id="track">
+        <div class="row" data-row="0">
+          <div class="row-title">Apps</div>
+          <div class="row-items" id="apps"></div>
+        </div>
+        <div class="row" data-row="1">
+          <div class="row-title">Today's prayers <span class="row-title-ar">صلوات اليوم</span></div>
+          <div class="row-items" id="today"></div>
+        </div>
+        <div class="row" data-row="2">
+          <div class="row-title">This week <span class="row-title-ar">هذا الأسبوع</span></div>
+          <div class="row-items" id="week"></div>
+        </div>
+        <div class="row" data-row="3">
+          <div class="row-title">Qibla &amp; Hijri <span class="row-title-ar">القبلة والتاريخ الهجري</span></div>
+          <div class="row-items" id="qibla"></div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- Aerial screensaver -->
+  <div id="saver"><div class="saver-img" id="saver-a"></div><div class="saver-img" id="saver-b"></div>
+    <div id="saver-label"><div id="saver-time"></div><div id="saver-city"></div></div>
+  </div>
+
+  <div id="azan-banner"></div>
+  <div id="toast"></div>
+  <div id="debug"></div>
+
+  <script src="config.js"></script>
+  <script src="js/prayer.js"></script>
+  <script src="js/scenes.js"></script>
+  <script src="js/azan.js"></script>
+  <script src="js/main.js"></script>
 </body>
 </html>

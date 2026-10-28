@@ -242,7 +242,10 @@
 
   var saverTimer = 0, saverFlip = false;
   function saverStep() {
-    var list = photoList(currentPeriod());
+    var list = [];
+    HaithamScenes.PRAYERS.forEach(function (p) {
+      photoList(p).forEach(function (u) { if (list.indexOf(u) < 0) list.push(u); });
+    });
     var a = $('#saver-a'), b = $('#saver-b');
     if (!list.length) { a.classList.remove('on'); b.classList.remove('on'); return; }  // drawn scene shows through
     var show = saverFlip ? a : b, hide = saverFlip ? b : a;
